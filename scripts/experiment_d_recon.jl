@@ -1,6 +1,7 @@
 using GeometricMedicalPhantoms
 using FFTW
 using Plots
+using Statistics
 
 include(joinpath(@__DIR__, "utils.jl"))
 
@@ -10,9 +11,8 @@ out_dir = ensure_output_dir(joinpath(@__DIR__, "..", "output"))
 nx = 256
 ny = 256
 
-fs = 200.0
 tr = 0.05
-frames_per_tr = round(Int, tr * fs)
+fs = 1 / tr
 lines = ny
 
 duration = tr * lines
@@ -25,27 +25,14 @@ _, vols = generate_cardiac_signals(duration, fs, hr_bpm)
 
 phantom = create_torso_phantom(nx, ny, :coronal; respiratory_signal=resp, cardiac_volumes=vols)
 
-# Build blurred frames: average 5 frames per TR
-num_tr = lines
-blurred = Array{Float64}(undef, nx, ny, num_tr)
-for i in 1:num_tr
-    i1 = (i - 1) * frames_per_tr + 1
-    i2 = min(i * frames_per_tr, size(phantom, 3))
-    slice_accum = zeros(Float64, nx, ny)
-    for k in i1:i2
-        slice_accum .+= abs.(phantom[:, :, k])
-    end
-    blurred[:, :, i] = slice_accum ./ (i2 - i1 + 1)
-end
-
 ground_truth = abs.(phantom[:, :, size(phantom, 3) ÷ 2])
 
 println("Simulating Cartesian line-by-line acquisition...")
 kspace_cart = zeros(ComplexF64, nx, ny)
-for i in 1:ny
-    img = blurred[:, :, i]
+for i in 1:nx
+    img = phantom[:, :, i]
     ksp = fft(ComplexF64.(img))
-    kspace_cart[:, i] = ksp[:, i]
+    kspace_cart[i, :] = ksp[i, :]
 end
 recon_cart = abs.(ifft(kspace_cart))
 
