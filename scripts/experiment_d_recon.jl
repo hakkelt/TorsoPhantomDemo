@@ -48,13 +48,20 @@ println("Cartesian MSE after scaling: ", round(mse_cart; digits=8))
 error_map = abs.(recon_cart_scaled .- ground_truth)
 
 println("Rendering combined output figure...")
-p = plot(layout=(1, 3), size=(1500, 500), margin=8Plots.mm)
+title_fontsize = 20
+p = plot(
+    layout=(1, 3),
+    size=(1500, 500),
+    margin=8Plots.mm,
+    titlefontsize=title_fontsize,
+)
 heatmap!(p[1], ground_truth'; c=:grays, axis=nothing, colorbar=false, aspect_ratio=1, yflip=false,
     title="Ground Truth")
 heatmap!(p[2], recon_cart_scaled'; c=:grays, axis=nothing, colorbar=false, aspect_ratio=1, yflip=false,
     title="Cartesian Reconstruction")
 heatmap!(p[3], error_map'; c=:grays, axis=nothing, colorbar=false, aspect_ratio=1, yflip=false,
     title="Absolute Error")
+annotate_panel_labels!(p, title_fontsize, -0.05, 1.13)
 
 savefig(p, joinpath(out_dir, "experiment_d_comparison.png"))
 savefig(p, joinpath(out_dir, "experiment_d_comparison.pdf"))

@@ -60,29 +60,41 @@ ti = TissueIntensities()
 measured_cardiac = measure_cardiac_volumes(phantom_cardiac, fov, ti)
 
 layout = @layout [a{0.38w} [b c; d e]]
-combined_plot = plot(layout=layout, size=(1600, 900), margin=8Plots.mm)
+title_fontsize = 20
+combined_plot = plot(
+    layout=layout,
+    size=(1600, 900),
+    margin=4Plots.mm,
+    titlefontsize=title_fontsize,
+    guidefontsize=16,
+    tickfontsize=14,
+    legendfontsize=14,
+)
 
 plot!(combined_plot[1], t, resp_typical_ml; label="Expected", color=:green, linewidth=2,
     xlabel="Time (s)", ylabel="Lung Volume (mL)", title="Lung Volume", legend=:topright,
-    left_margin=16Plots.mm, bottom_margin=4Plots.mm)
+    left_margin=16Plots.mm, bottom_margin=8Plots.mm)
 plot!(combined_plot[1], t, measured_typical_ml; label="Measured", color=:deeppink, linewidth=2)
 
 plot!(combined_plot[2], t_cardiac, vols_cardiac.lv; label=false, color=:green, linewidth=2,
     xlabel="Time (s)", ylabel="Volume (mL)", title="Left Ventricle Volume", legend=false,
-    bottom_margin=12Plots.mm)
+    left_margin=12Plots.mm, bottom_margin=12Plots.mm)
 plot!(combined_plot[2], t_cardiac, measured_cardiac.lv; label=false, color=:deeppink, linewidth=2)
 plot!(combined_plot[3], t_cardiac, vols_cardiac.rv; label=false, color=:green, linewidth=2,
     xlabel="Time (s)", ylabel="Volume (mL)", title="Right Ventricle Volume", legend=false,
-    bottom_margin=12Plots.mm)
+    left_margin=12Plots.mm, bottom_margin=12Plots.mm)
 plot!(combined_plot[3], t_cardiac, measured_cardiac.rv; label=false, color=:deeppink, linewidth=2)
 plot!(combined_plot[4], t_cardiac, vols_cardiac.la; label=false, color=:green, linewidth=2,
     xlabel="Time (s)", ylabel="Volume (mL)", title="Left Atrium Volume", legend=false,
-    top_margin=8Plots.mm, bottom_margin=4Plots.mm)
+    top_margin=8Plots.mm, left_margin=12Plots.mm, bottom_margin=4Plots.mm)
 plot!(combined_plot[4], t_cardiac, measured_cardiac.la; label=false, color=:deeppink, linewidth=2)
 plot!(combined_plot[5], t_cardiac, vols_cardiac.ra; label=false, color=:green, linewidth=2,
     xlabel="Time (s)", ylabel="Volume (mL)", title="Right Atrium Volume", legend=false,
-    top_margin=8Plots.mm, bottom_margin=4Plots.mm)
+    top_margin=8Plots.mm, left_margin=12Plots.mm, bottom_margin=4Plots.mm)
 plot!(combined_plot[5], t_cardiac, measured_cardiac.ra; label=false, color=:deeppink, linewidth=2)
+annotate_panel_labels!(combined_plot, title_fontsize, -0.15, 1.05, 1:1)
+annotate_panel_labels!(combined_plot, title_fontsize, -0.15, 1.15, 2:3)
+annotate_panel_labels!(combined_plot, title_fontsize, -0.15, 1.20, 4:5)
 
 combined_png = joinpath(out_dir, "experiment_b_realistic_plus_cardiac.png")
 combined_pdf = joinpath(out_dir, "experiment_b_realistic_plus_cardiac.pdf")

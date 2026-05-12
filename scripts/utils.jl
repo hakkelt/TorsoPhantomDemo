@@ -23,3 +23,17 @@ function normalize_frame(frame::AbstractArray)
     end
     return abs.(frame) ./ max_val
 end
+
+function panel_label(i)
+    return string(Char('A' + i - 1))
+end
+
+function annotate_panel_labels!(plt, fontsize, x_shift, y_shift, plot_indices=1:length(plt))
+    for i in plot_indices
+        xl = xlims(plt[i])
+        yl = ylims(plt[i])
+        x = xl[1] + x_shift * (xl[2] - xl[1])
+        y = yl[1] + y_shift * (yl[2] - yl[1])
+        annotate!(plt[i], x, y, text(panel_label(i), font(fontsize, "Helvetica Bold", :left, :top)))
+    end
+end

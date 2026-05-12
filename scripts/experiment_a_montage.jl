@@ -88,7 +88,14 @@ end
 max_val = maximum(maximum.(selected_slices))
 
 ncols = length(idx)
-montage = plot(layout = (1, ncols), size = (360 * ncols, 420))
+title_fontsize = 20
+montage = plot(
+    layout = (1, ncols),
+    size = (360 * ncols, 420),
+    titlefontsize = title_fontsize,
+    guidefontsize = 16,
+    tickfontsize = 13,
+)
 for (k, i) in enumerate(idx)
     img = (selected_slices[k] ./ max_val)'
     heatmap!(montage[k], img;
@@ -100,6 +107,7 @@ for (k, i) in enumerate(idx)
         ylabel = "z",
         title = "t=$(round(t[i]; digits = 2))s")
 end
+annotate_panel_labels!(montage, title_fontsize, 0.02, 1.25)
 
 println("Saving montage of selected frames...")
 png_path = joinpath(out_dir, "experiment_a_montage.png")
@@ -125,7 +133,15 @@ green_img = line_green'
 initial_img = (initial_slice ./ maximum(initial_slice))'
 
 println("Rendering line evolution maps...")
-line_plot = plot(layout = (1, 3), size = (1900, 600), legend = false, margin = 8Plots.mm)
+line_plot = plot(
+    layout = (1, 3),
+    size = (1900, 600),
+    legend = false,
+    margin = 4Plots.mm,
+    titlefontsize = title_fontsize,
+    guidefontsize = 22,
+    tickfontsize = 20,
+)
 heatmap!(line_plot[1], initial_img;
     c = :grays,
     colorbar = false,
@@ -160,8 +176,9 @@ heatmap!(line_plot[3], green_img';
     xlabel = "time",
     ylabel = "z",
     title = "Green Line Evolution",
-    bottom_margin = 14Plots.mm)
+    bottom_margin = 0Plots.mm)
 add_colored_frame!(line_plot[3], :green, nt, nz)
+annotate_panel_labels!(line_plot, title_fontsize, -0.15, 1.10)
 
 println("Saving line evolution maps...")
 line_png = joinpath(out_dir, "experiment_a_line_evolution.png")
