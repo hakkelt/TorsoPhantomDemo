@@ -132,6 +132,7 @@ red_img = line_red'
 green_img = line_green'
 initial_img = (initial_slice ./ maximum(initial_slice))'
 
+title_fontsize = 30
 println("Rendering line evolution maps...")
 line_plot = plot(
     layout = (1, 3),
