@@ -8,6 +8,8 @@ This demo runs a set of experiments to showcase the GeometricMedicalPhantoms tor
 julia --project=. -e 'using Pkg; Pkg.instantiate()'
 ```
 
+*Note: This project assumes Julia version 1.12. While it may work on older or newer versions, we recommend using 1.12 for best compatibility and reproducibility. To make it work with other versions, you may need to adjust the `Project.toml` file to specify compatible versions of dependencies, then run `Pkg.resolve()` to update the environment.*
+
 ## Experiments
 
 ```bash
